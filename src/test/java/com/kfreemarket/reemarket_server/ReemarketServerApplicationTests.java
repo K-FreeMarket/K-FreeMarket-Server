@@ -1,0 +1,13 @@
+package com.kfreemarket.reemarket_server;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class ReemarketServerApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}

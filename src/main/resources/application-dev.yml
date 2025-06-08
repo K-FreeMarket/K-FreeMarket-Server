@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: kfreemarket
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/kfreemarket?useUnicode=true&characterEncoding=utf8mb4&connectionCollation=utf8mb4_unicode_ci
+    username: ${db_username}
+    password: ${db_password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode: always
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
