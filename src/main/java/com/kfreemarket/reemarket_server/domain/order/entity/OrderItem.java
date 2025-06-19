@@ -1,4 +1,4 @@
-package com.kfreemarket.reemarket_server.domain.user.entity;
+package com.kfreemarket.reemarket_server.domain.order.entity;
 
 import com.kfreemarket.reemarket_server.domain.product.entity.Product;
 import jakarta.persistence.*;
@@ -11,38 +11,35 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@Getter
 @Entity
-@Table(name = "review")
-@EntityListeners(AuditingEntityListener.class)
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Review {
+@EntityListeners(AuditingEntityListener.class)
+public class OrderItem {
 
     @Id
-    @Column(name = "review_id", nullable = false)
+    @Column(name = "order_item_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 2)
-    private Integer rating;
-
-    private String content;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    private Integer quantity;
 
     @CreatedDate
     private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Orders orders;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 
     @Builder
-    public Review(Integer rating, String content, User user) {
-        this.rating = rating;
-        this.content = content;
-        this.user = user;
+    public OrderItem(Integer quantity, LocalDateTime createdAt, Orders orders, Product product) {
+        this.quantity = quantity;
+        this.createdAt = createdAt;
+        this.orders = orders;
+        this.product = product;
     }
 }

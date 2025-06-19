@@ -1,6 +1,6 @@
 package com.kfreemarket.reemarket_server.global.enums;
 
-public enum OrderStatusType {
+public enum OrderStatus {
     PREPARING, // 주문 접수 및 상품 준비 중
     SHIPPING, // 상품이 배송 중
     DELIVERED, // 상품이 고객에게 배송 완료

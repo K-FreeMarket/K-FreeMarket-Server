@@ -1,5 +1,8 @@
 package com.kfreemarket.reemarket_server.domain.product.entity;
 
+import com.kfreemarket.reemarket_server.domain.order.entity.OrderItem;
+import com.kfreemarket.reemarket_server.domain.user.entity.Question;
+import com.kfreemarket.reemarket_server.domain.user.entity.Review;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -43,6 +46,15 @@ public class Product {
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Discount> discounts;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<OrderItem> orderItems;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<Review> reviews;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<Question> questions;
 
     @Builder
     public Product( String ProductName, Integer ProductPrice, Integer stock) {

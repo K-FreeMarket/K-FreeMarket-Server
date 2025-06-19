@@ -1,6 +1,6 @@
 package com.kfreemarket.reemarket_server.domain.user.entity;
 
-import com.kfreemarket.reemarket_server.domain.order.entity.Order;
+import com.kfreemarket.reemarket_server.domain.order.entity.Orders;
 import com.kfreemarket.reemarket_server.global.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -57,7 +57,7 @@ public class User {
     private List<Question> questions;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Order> orders;
+    private List<Orders> orders;
 
     // 생성자 @Builder
     @Builder

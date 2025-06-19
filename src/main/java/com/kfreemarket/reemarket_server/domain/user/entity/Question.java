@@ -1,5 +1,6 @@
 package com.kfreemarket.reemarket_server.domain.user.entity;
 
+import com.kfreemarket.reemarket_server.domain.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -41,6 +42,10 @@ public class Question {
 
     @OneToOne(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Answer answer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
 
 
     @Builder
