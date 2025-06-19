@@ -2,6 +2,7 @@ package com.kfreemarket.reemarket_server.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -42,4 +43,10 @@ public class Question {
     private Answer answer;
 
 
+    @Builder
+    public Question(String content, Boolean is_private, Boolean is_answered) {
+        this.content = content;
+        this.is_private = is_private;
+        this.is_answered = is_answered;
+    }
 }

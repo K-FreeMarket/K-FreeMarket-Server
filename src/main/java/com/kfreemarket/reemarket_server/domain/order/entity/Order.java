@@ -1,5 +1,8 @@
-package com.kfreemarket.reemarket_server.domain.user.entity;
+package com.kfreemarket.reemarket_server.domain.order.entity;
 
+
+import com.kfreemarket.reemarket_server.domain.user.entity.User;
+import com.kfreemarket.reemarket_server.global.enums.OrderStatusType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -15,18 +18,14 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class Answer {
+public class Order {
 
     @Id
-    @Column(name = "question_id")
+    @Column(name="order_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId  // 핵심! 이걸 통해 question_id를 PK로도 사용
-    @JoinColumn(name = "question_id")
-    private Question question;
-
-    private String content;
+    private OrderStatusType orderStatus;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -34,10 +33,8 @@ public class Answer {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Builder
-    public Answer(Question question, String content) {
-        this.question = question;
-        this.content = content;
-    }
 }

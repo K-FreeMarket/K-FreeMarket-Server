@@ -2,6 +2,7 @@ package com.kfreemarket.reemarket_server.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -32,4 +33,11 @@ public class Review {
 
     @CreatedDate
     private LocalDateTime createdAt;
+
+    @Builder
+    public Review(Integer rating, String content, User user) {
+        this.rating = rating;
+        this.content = content;
+        this.user = user;
+    }
 }
