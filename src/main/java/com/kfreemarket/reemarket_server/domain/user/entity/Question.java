@@ -2,40 +2,44 @@ package com.kfreemarket.reemarket_server.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Entity
-@Table(name = "cart_item")
+@Table(name = "question")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CartItem {
+public class Question {
 
     @Id
-    @Column(name = "cart_item_id", nullable = false)
+    @Column(name = "question_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long questionId;
 
-    @Column(length = 10, nullable = false)
-    private int quantity;
+    private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")  //FK 키 이름
-    private User user;
+    private Boolean is_private;
+
+    private Boolean is_answered;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDateTime created_at;
+
+    @LastModifiedDate
+    private LocalDateTime updated_at;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToOne(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Answer answer;
 
 
-    @Builder
-    public CartItem(int quantity, User user) {
-        this.quantity = quantity;
-        this.user = user;
-    }
 }

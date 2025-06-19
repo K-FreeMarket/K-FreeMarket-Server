@@ -2,7 +2,6 @@ package com.kfreemarket.reemarket_server.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,30 +11,25 @@ import java.time.LocalDateTime;
 
 @Getter
 @Entity
-@Table(name = "cart_item")
+@Table(name = "review")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CartItem {
+public class Review {
 
     @Id
-    @Column(name = "cart_item_id", nullable = false)
+    @Column(name = "review_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 10, nullable = false)
-    private int quantity;
+    @Column(nullable = false, length = 2)
+    private Integer rating;
+
+    private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")  //FK 키 이름
+    @JoinColumn(name = "user_id")
     private User user;
 
     @CreatedDate
     private LocalDateTime createdAt;
-
-
-    @Builder
-    public CartItem(int quantity, User user) {
-        this.quantity = quantity;
-        this.user = user;
-    }
 }
