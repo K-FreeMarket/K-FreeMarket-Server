@@ -59,6 +59,9 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Orders> orders;
 
+    @OneToMany(mappedBy="user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Refresh> refreshes;
+
     // 생성자 @Builder
     @Builder
     public User(String username,String mobileNumber, String address, UserRole userRole, String email, LocalDateTime created_at, LocalDateTime updated_at) {
@@ -67,5 +70,11 @@ public class User {
         this.address = address;
         this.userRole = userRole;
         this.email = email;
+    }
+
+    @Builder
+    public User(String email, UserRole userRole){
+        this.email = email;
+        this.userRole = userRole;
     }
 }
