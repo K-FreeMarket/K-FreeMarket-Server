@@ -1,11 +1,9 @@
 package com.kfreemarket.reemarket_server.global.config;
 
-import com.kfreemarket.reemarket_server.domain.user.repository.RefreshRepository;
-import com.kfreemarket.reemarket_server.domain.user.repository.UserReposiotry;
-import com.kfreemarket.reemarket_server.global.security.jwt.CustomLogoutFilter;
 import com.kfreemarket.reemarket_server.global.security.jwt.JWTFilter;
 import com.kfreemarket.reemarket_server.global.security.jwt.JWTUtil;
-import com.kfreemarket.reemarket_server.global.security.jwt.LoginFilter;
+import com.kfreemarket.reemarket_server.global.security.oauth2.CustomSuccessHandler;
+import com.kfreemarket.reemarket_server.global.security.service.CustomOAuthUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +17,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -31,12 +28,9 @@ import java.util.Collections;
 @EnableWebSecurity // 스프링 스큐리티 필터가 스프링 필터체인에 등록이 됩니다.
 public class SecurityConfig {
 
-
-    //AuthenticationManager가 인자로 받을 AuthenticationConfiguraion 객체 생성자 주입
-    private final AuthenticationConfiguration authenticationConfiguration;
+    private final CustomOAuthUserService customOAuthUserService;
+    private final CustomSuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
-    private final RefreshRepository refreshRepository;
-    private final UserReposiotry memberRepository;
 
     //AuthenticationManager Bean 등록
     @Bean
@@ -73,31 +67,31 @@ public class SecurityConfig {
 
         //csrf disable
         http
-                .csrf(AbstractHttpConfigurer::disable);
-        // From 로그인 방식 disable
-        http
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable);
+                .csrf((auth) -> auth.disable());
 
-        // 경로별 인가 작업
         http
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**").permitAll()
-                        .requestMatchers("/api/account/**").permitAll()
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers("/reissue").permitAll()
-                        .requestMatchers("/admin").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable);
+
+        //JWTFilter 추가
+        http
+                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+
+        // Oauth 코드
+        http
+                .oauth2Login((oauth2)-> oauth2
+                        .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig.userService(customOAuthUserService)))
+                        .successHandler(customSuccessHandler)
                 );
 
-        http
-                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
 
+        // 경로별 인가
         http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository, memberRepository), UsernamePasswordAuthenticationFilter.class);
+                .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/", "/oauth2/**", "/login/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**").permitAll()
+                        .anyRequest().authenticated());
 
-        http
-                .addFilterBefore(new CustomLogoutFilter(refreshRepository, jwtUtil), LogoutFilter.class);
         http
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

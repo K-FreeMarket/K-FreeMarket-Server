@@ -29,10 +29,13 @@ public class User {
     @Column(name = "user_name", nullable = false, length = 50)
     private String userName;
 
+    @Column(name = "name")
+    private String name;
+
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @Column(name = "mobile_number", unique = true, nullable = false, length = 15)
+    @Column(name = "mobile_number", unique = true, nullable = true, length = 15)
     private String mobileNumber;
 
     @Column(name = "address", nullable = true)
@@ -64,17 +67,13 @@ public class User {
 
     // 생성자 @Builder
     @Builder
-    public User(String username,String mobileNumber, String address, UserRole userRole, String email, LocalDateTime created_at, LocalDateTime updated_at) {
+    public User(String username, String name,String mobileNumber, String address, UserRole userRole, String email, LocalDateTime created_at, LocalDateTime updated_at) {
         this.userName = username;
+        this.name = name;
         this.mobileNumber = mobileNumber;
         this.address = address;
         this.userRole = userRole;
         this.email = email;
     }
 
-    @Builder
-    public User(String email, UserRole userRole){
-        this.email = email;
-        this.userRole = userRole;
-    }
 }
