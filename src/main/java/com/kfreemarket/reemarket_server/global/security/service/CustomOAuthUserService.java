@@ -4,10 +4,7 @@ import com.kfreemarket.reemarket_server.domain.user.dto.UserDTO;
 import com.kfreemarket.reemarket_server.domain.user.entity.User;
 import com.kfreemarket.reemarket_server.domain.user.repository.UserRepository;
 import com.kfreemarket.reemarket_server.global.enums.UserRole;
-import com.kfreemarket.reemarket_server.global.security.dto.CustomOAuth2User;
-import com.kfreemarket.reemarket_server.global.security.dto.GoogleResponse;
-import com.kfreemarket.reemarket_server.global.security.dto.NaverResponse;
-import com.kfreemarket.reemarket_server.global.security.dto.OAuth2Response;
+import com.kfreemarket.reemarket_server.global.security.dto.*;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -41,6 +38,11 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
         else if (registrationId.equals("google")) {
 
             oAuth2Response = new GoogleResponse(oAuth2User.getAttributes());
+        }
+        else if (registrationId.equals("kakao")){
+
+            oAuth2Response=new KakaoResponse(oAuth2User.getAttributes());
+
         }
         else {
 

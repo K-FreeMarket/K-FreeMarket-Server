@@ -62,8 +62,6 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Orders> orders;
 
-    @OneToMany(mappedBy="user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Refresh> refreshes;
 
     // 생성자 @Builder
     @Builder
