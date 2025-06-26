@@ -3,6 +3,7 @@ package com.kfreemarket.reemarket_server.global.security.jwt;
 import com.kfreemarket.reemarket_server.domain.user.dto.UserDTO;
 import com.kfreemarket.reemarket_server.global.enums.UserRole;
 import com.kfreemarket.reemarket_server.global.security.dto.CustomOAuth2User;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -14,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class JWTFilter extends OncePerRequestFilter {
 
@@ -26,51 +28,41 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        String requestUri = request.getRequestURI();
-        if (requestUri.matches("^\\/login(?:\\/.*)?$")) {
 
+        String accessToken = request.getHeader("access");
+
+        // access 토큰이 없으면 반환
+        if (accessToken == null) {
             filterChain.doFilter(request, response);
             return;
         }
-        if (requestUri.matches("^\\/oauth2(?:\\/.*)?$")) {
 
-            filterChain.doFilter(request, response);
-            return;
-        }
+        // 토큰 만료 여부 확인, 만료시 다음 필터로 넘기지 않음
+        try {
+            jwtUtil.isExpired(accessToken);
+        } catch (ExpiredJwtException e) {
 
+            //response body
+            PrintWriter writer = response.getWriter();
+            writer.print("access token expired!!");
 
-        //cookie들을 불러온 뒤 Authorization Key에 담긴 쿠키를 찾음
-        String authorization = null;
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-
-            System.out.println(cookie.getName());
-            if (cookie.getName().equals("Authorization")) {
-
-                authorization = cookie.getValue();
-            }
-        }
-
-        //Authorization 헤더 검증
-        if (authorization == null) {
-
-            System.out.println("token null");
-            filterChain.doFilter(request, response);
-
-            //조건이 해당되면 메소드 종료 (필수)
+            //response status code
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         //토큰
-        String token = authorization;
+        String token = accessToken;
 
-        //토큰 소멸 시간 검증
-        if (jwtUtil.isExpired(token)) {
+        String category = jwtUtil.getCategory(token);
+        if (!category.equals("access")) {
 
-            System.out.println("token expired");
-            filterChain.doFilter(request, response);
+            //response body
+            PrintWriter writer = response.getWriter();
+            writer.print("invalid access token");
 
-            //조건이 해당되면 메소드 종료 (필수)
+            //response status code
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 

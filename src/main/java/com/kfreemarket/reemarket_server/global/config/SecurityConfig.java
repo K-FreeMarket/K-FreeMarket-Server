@@ -1,7 +1,9 @@
 package com.kfreemarket.reemarket_server.global.config;
 
+import com.kfreemarket.reemarket_server.domain.system.repository.RefreshTokenRepository;
 import com.kfreemarket.reemarket_server.global.security.jwt.JWTFilter;
 import com.kfreemarket.reemarket_server.global.security.jwt.JWTUtil;
+import com.kfreemarket.reemarket_server.global.security.oauth2.CustomLogoutFilter;
 import com.kfreemarket.reemarket_server.global.security.oauth2.CustomSuccessHandler;
 import com.kfreemarket.reemarket_server.global.security.service.CustomOAuthUserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -31,6 +33,7 @@ public class SecurityConfig {
     private final CustomOAuthUserService customOAuthUserService;
     private final CustomSuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     //AuthenticationManager Bean 등록
     @Bean
@@ -61,13 +64,14 @@ public class SecurityConfig {
 
                         // 헤더 cors에 허용
                         configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
-                        configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+                        configuration.setExposedHeaders(Collections.singletonList("refresh"));
+                        configuration.setExposedHeaders(Collections.singletonList("access"));
 
                         return configuration;
                     }
                 })));
 
-        //csrf disable
+        // csrf disable
         http
                 .csrf((auth) -> auth.disable());
 
@@ -75,7 +79,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable);
 
-        //JWTFilter 추가
+        // JWTFilter 추가
         http
                 .addFilterAfter(new JWTFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
 
@@ -86,13 +90,15 @@ public class SecurityConfig {
                         .successHandler(customSuccessHandler)
                 );
 
-
         // 경로별 인가
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/oauth2/**", "/login/**").permitAll()
+                        .requestMatchers( "/reissue/**", "/auth/token").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**").permitAll()
                         .anyRequest().authenticated());
+
+        http
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshTokenRepository), LogoutFilter.class);
 
         http
                 .sessionManagement(session -> session
