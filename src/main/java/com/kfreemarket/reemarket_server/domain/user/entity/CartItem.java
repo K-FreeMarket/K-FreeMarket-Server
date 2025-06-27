@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 
 @Getter
 @Entity
-@Table(name = "cart_item")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartItem {

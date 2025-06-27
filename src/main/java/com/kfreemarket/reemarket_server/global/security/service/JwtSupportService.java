@@ -6,7 +6,9 @@ import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Service
 @RequiredArgsConstructor
@@ -18,12 +20,14 @@ public class JwtSupportService {
      * RefreshToken 저장
      */
     public void addRefreshEntity(String username, String refresh, Long expiredMs) {
-        Date date = new Date(System.currentTimeMillis() + expiredMs);
+        LocalDateTime date = Instant.ofEpochMilli(System.currentTimeMillis() + expiredMs)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
 
         RefreshToken refreshToken = RefreshToken.builder()
                 .username(username)
                 .refresh(refresh)
-                .expiration(date.toString())
+                .expiration(date)
                 .build();
 
         refreshTokenRepository.save(refreshToken);

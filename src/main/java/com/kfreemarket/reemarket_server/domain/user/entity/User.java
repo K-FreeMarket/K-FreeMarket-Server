@@ -16,7 +16,6 @@ import java.util.List;
 
 @Getter
 @Entity
-@Table(name = "user")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {

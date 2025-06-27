@@ -7,9 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
-@Table(name = "refresh_token")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RefreshToken {
@@ -22,10 +23,10 @@ public class RefreshToken {
 
     private String refresh;
 
-    private String expiration;
+    private LocalDateTime expiration;
 
     @Builder
-    public RefreshToken(String username, String refresh, String expiration) {
+    public RefreshToken(String username, String refresh, LocalDateTime expiration) {
         this.username = username;
         this.refresh = refresh;
         this.expiration = expiration;
