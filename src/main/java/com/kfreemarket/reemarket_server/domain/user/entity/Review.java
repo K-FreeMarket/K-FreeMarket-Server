@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 
 @Getter
 @Entity
-@Table(name = "review")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Review {
