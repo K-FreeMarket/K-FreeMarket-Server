@@ -7,6 +7,12 @@ spring:
     url: jdbc:mysql://localhost:3306/kfreemarket?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
     username: ${DB_USER}
     password: ${DB_PASSWORD}
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 10
+      idle-timeout: 30000
+      connection-timeout: 30000
+      pool-name: HikariPool-1
 
   sql:
     init:
@@ -76,3 +82,8 @@ springdoc:
     path: /swagger-ui.html
     disable-swagger-default-url: true
     display-query-params-without-oauth2: true
+
+logging:
+  level:
+    org.hibernate.engine.jdbc.connections.internal: DEBUG
+    com.zaxxer.hikari: DEBUG

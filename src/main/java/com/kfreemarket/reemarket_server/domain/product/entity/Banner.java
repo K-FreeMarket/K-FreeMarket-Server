@@ -49,7 +49,7 @@ public class Banner {
     private LocalDateTime updatedAt;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "discount_id")
+    @JoinColumn(name = "discount_id", nullable = true)
     private Discount discount;
 
     @Builder
