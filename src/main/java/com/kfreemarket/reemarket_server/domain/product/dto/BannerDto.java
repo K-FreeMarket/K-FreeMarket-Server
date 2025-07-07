@@ -21,7 +21,7 @@ public class BannerDto {
 
     private Integer priority;
 
-    private Boolean isActive;
+    private Boolean active;
 
     private LocalDateTime startAt;
 

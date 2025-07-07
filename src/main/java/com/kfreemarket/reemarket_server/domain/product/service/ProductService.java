@@ -15,8 +15,13 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public List<ProductDto> getBestProducts() {
+    public List<ProductDto> getTopProducts() {
         List<Product> products = productRepository.findTop5ByOrderBySalesCountDesc();
+
+        if (products.isEmpty()) {
+            return List.of();
+        }
+
         return products.stream().map(ProductDto::of).toList();
     }
 }

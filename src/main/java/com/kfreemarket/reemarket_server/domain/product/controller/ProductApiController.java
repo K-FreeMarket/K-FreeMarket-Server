@@ -28,7 +28,7 @@ public class ProductApiController {
 
     @GetMapping("/top")
     public ResponseEntity<List<ProductDto>> getTopProduct() {
-        List<ProductDto> topProductDtos = productService.getBestProducts();
+        List<ProductDto> topProductDtos = productService.getTopProducts();
         return ResponseEntity.ok(topProductDtos);
     }
 }

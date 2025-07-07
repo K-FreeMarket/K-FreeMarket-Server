@@ -16,6 +16,10 @@ public class BannerService {
 
     public List<BannerDto> getAllBanners() {
         List<Banner> bannerList =  bannerRepository.findAll();
+
+        if (bannerList.isEmpty()) {
+            return List.of();
+        }
         return bannerList.stream().map(BannerDto::of).toList();
     }
 
