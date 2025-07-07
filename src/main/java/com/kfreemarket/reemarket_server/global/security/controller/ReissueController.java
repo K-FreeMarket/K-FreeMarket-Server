@@ -23,6 +23,9 @@ public class ReissueController {
     private final JwtSupportService jwtSupportService;
     private final RefreshTokenRepository refreshTokenRepository;
 
+    /**
+     * Refresh Token이 만료되면 갱신
+     * */
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
 
@@ -93,6 +96,12 @@ public class ReissueController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /**
+     * 로그인시 accee Token를 header로 반환
+     * @param request
+     * @param response
+     * @return
+     */
     @PostMapping("/auth/token")
     public ResponseEntity<?> authToken(HttpServletRequest request, HttpServletResponse response) {
 
@@ -143,6 +152,7 @@ public class ReissueController {
         String newAccess = jwtUtil.createJwt("access", username, role, 60 * 10 * 10000L);
 
         response.setHeader("access", newAccess);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
