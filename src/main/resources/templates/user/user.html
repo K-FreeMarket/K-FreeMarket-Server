@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragments/common :: head('유저 관리')">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>User View</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body class="d-flex flex-column min-vh-100">
+    <nav
+      class="navbar navbar-expand-lg bg-dark"
+      th:replace="fragments/common :: navibar"
+    >
+      <div class="container">
+        <a class="navbar-brand text-white" href="/admin">K-FreeMarket</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a
+                class="nav-link active text-white"
+                aria-current="page"
+                href="/admin"
+                >Home</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-white" href="/admin/users">유저</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-white" href="/admin/products">상품</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-white" href="/admin/products/events"
+                >이벤트</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container p-5">
+      <h1 class="">유저 관리</h1>
+      <div class="text-end">
+        총 건수 : <span th:text="${#lists.size(users)}">0</span>
+      </div>
+
+      <table class="table table-striped table-dark">
+        <thead>
+          <tr>
+            <th scope="col">번호</th>
+            <th scope="col">이름</th>
+            <th scope="col">권한</th>
+            <th scope="col">이메일</th>
+            <th scope="col">전화번호</th>
+            <th scope="col">주소</th>
+            <th scope="col">생성 일자</th>
+            <th scope="col">변경 일자</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="user : ${users}">
+            <th th:text="${user.id}">1</th>
+            <td>
+              <a
+                th:href="@{/admin/form(name=${user.name})}"
+                th:text="${user.name}"
+                >이름</a
+              >
+            </td>
+            <td th:text="${user.userRole}">권한</td>
+            <td th:text="${user.mobileNumber}">핸드폰 번호</td>
+            <td th:text="${user.address}">주소</td>
+            <td th:text="${user.email}">이메일</td>
+            <td th:text="${user.createdAt}">생성 날자</td>
+            <td th:text="${user.updatedAt}">업데이트 날짜</td>
+          </tr>
+        </tbody>
+      </table>
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        </ul>
+      </nav>
+
+      <div class="text-end">
+        <a type="button" class="btn btn-dark" th:href="@{/admin/form}">쓰기</a>
+      </div>
+    </main>
+
+    <footer class="mt-auto" th:replace="fragments/common :: footer"></footer>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
+      integrity="sha384-7qAoOXltbVP82dhxHAUje59V5r2YsVfBafyUDxEdApLPmcdhBPg1DKg1ERo0BZlK"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
