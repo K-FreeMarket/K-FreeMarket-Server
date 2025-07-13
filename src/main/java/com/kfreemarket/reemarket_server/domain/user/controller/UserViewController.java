@@ -28,13 +28,13 @@ public class UserViewController {
     }
 
     @GetMapping("/users")
-    public String userView(Model model, @PageableDefault(size = 20) Pageable pageable, @RequestParam(required = false, defaultValue = "") String searchText) {
-        UserPageDto userPageDto = userService.getAllUsers(pageable, searchText);
+    public String userView(Model model, @PageableDefault(size = 20) Pageable pageable, @RequestParam(required = false, defaultValue = "") String searchText, @RequestParam(defaultValue = "idAsc") String sort) {
+        UserPageDto userPageDto = userService.getAllUsers(pageable, searchText, sort);
 
         model.addAttribute("startPage", userPageDto.getStartPage());
         model.addAttribute("endPage", userPageDto.getEndPage());
         model.addAttribute("users", userPageDto.getUsers());
-        model.addAttribute("deleteUser", "");
+        model.addAttribute("sort", sort);
         return "/user/user";
     }
 
@@ -51,5 +51,4 @@ public class UserViewController {
         return "redirect:/admin/users";
 
     }
-
 }
