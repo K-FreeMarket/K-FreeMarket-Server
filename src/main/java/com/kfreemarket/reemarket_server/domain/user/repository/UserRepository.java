@@ -1,6 +1,8 @@
 package com.kfreemarket.reemarket_server.domain.user.repository;
 
 import com.kfreemarket.reemarket_server.domain.user.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,5 +12,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByUserName(String username);
 
-    User findByName(String name);
+    Page<User> findAllByNameContainingOrEmailContainingOrMobileNumberContainingOrAddressContaining(String name, String email, String mobileNumber, String address, Pageable pageable);
 }

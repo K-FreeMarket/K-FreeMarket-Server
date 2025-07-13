@@ -1,15 +1,17 @@
 package com.kfreemarket.reemarket_server.domain.user.controller;
 
-import com.kfreemarket.reemarket_server.domain.user.entity.User;
+import com.kfreemarket.reemarket_server.domain.user.dto.UserPageDto;
 import com.kfreemarket.reemarket_server.domain.user.repository.UserRepository;
 import com.kfreemarket.reemarket_server.domain.user.service.UserService;
 import com.kfreemarket.reemarket_server.global.validator.UserValidator;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 @Controller
 @RequestMapping("/admin")
@@ -26,55 +28,28 @@ public class UserViewController {
     }
 
     @GetMapping("/users")
-    public String userView(Model model) {
+    public String userView(Model model, @PageableDefault(size = 20) Pageable pageable, @RequestParam(required = false, defaultValue = "") String searchText) {
+        UserPageDto userPageDto = userService.getAllUsers(pageable, searchText);
 
-        model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("startPage", userPageDto.getStartPage());
+        model.addAttribute("endPage", userPageDto.getEndPage());
+        model.addAttribute("users", userPageDto.getUsers());
+        model.addAttribute("deleteUser", "");
         return "/user/user";
     }
 
-    @GetMapping("/form")
-    public String formView(Model model, @RequestParam(required = false) String name) {
-        if (name == null) {
-            model.addAttribute("user", User.builder().build());
-        }else{
-            User user = userRepository.findByName(name);
-            model.addAttribute("user", User.builder().
-                    id(user.getId()).
-                    username(user.getUserName()).
-                    name(user.getName()).
-                    mobileNumber(user.getMobileNumber()).
-                    address(user.getAddress()).
-                    build());
+    @DeleteMapping("/user")
+    public String deleteUser(@RequestParam Long userId, RedirectAttributes redirectAttributes) {
+        Boolean deleted = userService.deleteUser(userId);
+
+        if(deleted){
+            redirectAttributes.addFlashAttribute("message", "삭제 성공");
+
+        }else {
+            redirectAttributes.addFlashAttribute("error", "삭제 실패");
         }
-
-        return "/user/form";
-    }
-
-    @PostMapping("/form")
-    public String postForm(@Valid User user, BindingResult bindingResult) {
-
-        userValidator.validate(user, bindingResult);
-        if (bindingResult.hasErrors()) {
-            return "/user/form";
-        }
-
-        User user1 = userRepository.findByName(user.getName());
-
-        if (user1 != null) {
-            User updateUser = User.builder().
-                    id(user1.getId()).
-                    username(user1.getUserName()).
-                    name(user1.getName()).
-                    userRole(user1.getUserRole()).
-                    mobileNumber(user.getMobileNumber()).
-                    address(user.getAddress()).
-                    email(user1.getEmail()).
-                    build();
-            userRepository.save(updateUser);
-        }
-
-
         return "redirect:/admin/users";
+
     }
 
 }
