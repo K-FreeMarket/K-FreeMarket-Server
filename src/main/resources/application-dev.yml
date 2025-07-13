@@ -75,6 +75,11 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
 springdoc:
   swagger-ui:
     operations-sorter: alpha(알파멧 오름차순), method(HTTP메소드순)

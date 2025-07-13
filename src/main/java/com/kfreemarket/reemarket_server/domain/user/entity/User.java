@@ -3,6 +3,7 @@ package com.kfreemarket.reemarket_server.domain.user.entity;
 import com.kfreemarket.reemarket_server.domain.order.entity.Orders;
 import com.kfreemarket.reemarket_server.global.enums.UserRole;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,12 +29,14 @@ public class User {
     @Column(name = "user_name", nullable = false, length = 50)
     private String userName;
 
+    @Size(max = 50, min = 2)
     @Column(name = "name")
     private String name;
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
+    @Size(max = 15, min = 12)
     @Column(name = "mobile_number", unique = true, nullable = true, length = 15)
     private String mobileNumber;
 
@@ -64,7 +67,8 @@ public class User {
 
     // 생성자 @Builder
     @Builder
-    public User(String username, String name,String mobileNumber, String address, UserRole userRole, String email, LocalDateTime created_at, LocalDateTime updated_at) {
+    public User(Long id, String username, String name,String mobileNumber, String address, UserRole userRole, String email) {
+        this.id = id;
         this.userName = username;
         this.name = name;
         this.mobileNumber = mobileNumber;

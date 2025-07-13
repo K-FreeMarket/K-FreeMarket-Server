@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head th:fragment="head(title)">
+    <meta charset="UTF-8" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"
+    />
+    <link href="globals.css" th:href="@{/globals.css}" rel="stylesheet" />
+    <title th:text="${title}">hello K-FreeMarktet</title>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg bg-dark" th:fragment="navibar">
+      <div class="container">
+        <a class="navbar-brand text-white" href="/admin">K-FreeMarket</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a
+                class="nav-link active text-white"
+                aria-current="page"
+                href="/admin"
+                >Home</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link text-white"
+                href="/admin/users"
+                th:href="@{/admin/users}"
+                >유저</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link text-white"
+                href="/admin/products"
+                th:href="@{/admin/products}"
+                >상품</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link text-white"
+                href="#"
+                th:href="@{/admin/products}"
+                >이벤트</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <footer class="mt-auto" th:fragment="footer">
+      <div class="text-center">제작자 : wjd15sheep@gamil.com</div>
+    </footer>
+  </body>
+</html>
