@@ -45,7 +45,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 
         response.addCookie(jwtSupportService.createCookie("refresh", refresh));
-        response.sendRedirect("http://localhost:3000/");
+        response.sendRedirect("http://localhost:3000/login?access=true");
 
     }
 

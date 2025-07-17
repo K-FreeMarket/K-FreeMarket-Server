@@ -77,6 +77,7 @@ public class SecurityConfig {
 
         http
                 .formLogin(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable);
 
         // JWTFilter 추가
@@ -93,7 +94,7 @@ public class SecurityConfig {
         // 경로별 인가
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers( "/reissue/**", "/auth/token").permitAll()
+                        .requestMatchers( "/reissue/**", "/auth/token", "/logout").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**").permitAll()
                         .requestMatchers("/admin/**", "/api/products/**").permitAll()
                         .anyRequest().authenticated());

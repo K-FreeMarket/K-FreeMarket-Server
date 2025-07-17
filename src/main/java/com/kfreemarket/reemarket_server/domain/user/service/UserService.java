@@ -12,6 +12,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -20,23 +22,27 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UserPageDto getAllUsers(Pageable pageable, String searchText, String sort) {
-        Sort sortOption;
-
-        switch (sort) {
-            case "idAsc": sortOption = Sort.by(Sort.Direction.ASC, "id"); break;
-            case "nameAsc": sortOption = Sort.by(Sort.Direction.ASC, "name"); break;
-            default: sortOption = Sort.by(Sort.Direction.DESC, "id"); // idDesc
-        }
-
         Pageable sortedPageable = PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
-                sortOption
+                getSortOption(sort)
         );
 
         Page<User> users = userRepository.findAllByNameContainingOrEmailContainingOrMobileNumberContainingOrAddressContaining(
-                searchText, searchText, searchText, searchText, sortedPageable);
+                searchText, searchText, searchText, searchText, sortedPageable
+        );
+
         return UserPageDto.of(users);
+    }
+
+    private Sort getSortOption(String sort) {
+        Map<String, Sort> sortMap = Map.of(
+                "idAsc", Sort.by(Sort.Direction.ASC, "id"),
+                "nameAsc", Sort.by(Sort.Direction.ASC, "name"),
+                "idDesc", Sort.by(Sort.Direction.DESC, "id") // 기본값
+        );
+
+        return sortMap.getOrDefault(sort, Sort.by(Sort.Direction.DESC, "id"));
     }
 
     @Transactional
