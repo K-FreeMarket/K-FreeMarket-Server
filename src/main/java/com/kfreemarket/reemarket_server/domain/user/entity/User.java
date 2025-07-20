@@ -43,6 +43,12 @@ public class User {
     @Column(name = "address", nullable = true)
     private String address;
 
+    @Column(name = "detail_address", nullable = true)
+    private String detailAddress;
+
+    @Column(name = "postcode", nullable = true)
+    private String postcode;
+
     @Column(unique = true, nullable = false, length = 50)
     private String email;
 
@@ -67,7 +73,7 @@ public class User {
 
     // 생성자 @Builder
     @Builder
-    public User(Long id, String username, String name,String mobileNumber, String address, UserRole userRole, String email) {
+    public User(Long id, String username, String name,String mobileNumber, String address, UserRole userRole, String email, String postcode, String detailAddress) {
         this.id = id;
         this.userName = username;
         this.name = name;
@@ -75,6 +81,8 @@ public class User {
         this.address = address;
         this.userRole = userRole;
         this.email = email;
+        this.postcode = postcode;
+        this.detailAddress = detailAddress;
     }
 
 }
