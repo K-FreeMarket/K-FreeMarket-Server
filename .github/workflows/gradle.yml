@@ -14,10 +14,10 @@ jobs:
     steps:
     # (1) 프로그램 빌드 (Java 빌드) 1) Java 및 Docekr 빌드를 위한 환경 설정
     - uses: actions/checkout@v4
-    - name: Set up JDK 17
+    - name: Set up JDK 21
       uses: actions/setup-java@v4
       with:
-        java-version: '17'
+        java-version: '21'
         distribution: 'temurin'
 
     # (1) 프로그램 빌드 (Java 빌드) 2) Java 빌드를 위한 ./gradlew 파일 권한 변경
@@ -30,7 +30,7 @@ jobs:
 
     # (2) Docker 이미지 빌드 1) DockerFile 을 기반으로 Docekr Image 빌드
     - name: docker image build
-      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo .
+      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/k-freemarket-demo .
 
     # (2) Docker 이미지 빌드 2) Docker Hub 에 Login
     - name: docker login
@@ -41,4 +41,4 @@ jobs:
 
     # (2) Docker 이미지 빌드 3) Docker Hub 에 빌드된 이미지 push
     - name: docker Hub push
-      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/k-freemarket-demo
