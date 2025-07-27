@@ -1,0 +1,23 @@
+package com.kfreemarket.reemarket_server.domain.product.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/admin/products")
+public class ProductViewController {
+
+    @GetMapping
+    public String productView(Model model) {
+
+        return "products";
+    }
+
+    @GetMapping("/events")
+    public String eventView(Model model) {
+        return "events";
+    }
+
+}

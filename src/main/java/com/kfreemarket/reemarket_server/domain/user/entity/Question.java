@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 
 @Getter
 @Entity
-@Table(name = "question")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Question {
@@ -29,6 +28,8 @@ public class Question {
     private Boolean is_private;
 
     private Boolean is_answered;
+
+    private String title;
 
     @CreatedDate
     private LocalDateTime created_at;
@@ -49,9 +50,11 @@ public class Question {
 
 
     @Builder
-    public Question(String content, Boolean is_private, Boolean is_answered) {
+    public Question(String content, Boolean is_private, Boolean is_answered, String title, User user) {
         this.content = content;
         this.is_private = is_private;
         this.is_answered = is_answered;
+        this.title = title;
+        this.user = user;
     }
 }

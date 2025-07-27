@@ -3,6 +3,7 @@ package com.kfreemarket.reemarket_server.domain.user.entity;
 import com.kfreemarket.reemarket_server.domain.order.entity.Orders;
 import com.kfreemarket.reemarket_server.global.enums.UserRole;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +17,6 @@ import java.util.List;
 
 @Getter
 @Entity
-@Table(name = "user")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
@@ -29,14 +29,25 @@ public class User {
     @Column(name = "user_name", nullable = false, length = 50)
     private String userName;
 
+    @Size(max = 50, min = 2)
+    @Column(name = "name")
+    private String name;
+
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @Column(name = "mobile_number", unique = true, nullable = false, length = 15)
+    @Size(max = 15, min = 12)
+    @Column(name = "mobile_number", unique = true, nullable = true, length = 15)
     private String mobileNumber;
 
     @Column(name = "address", nullable = true)
     private String address;
+
+    @Column(name = "detail_address", nullable = true)
+    private String detailAddress;
+
+    @Column(name = "postcode", nullable = true)
+    private String postcode;
 
     @Column(unique = true, nullable = false, length = 50)
     private String email;
@@ -59,13 +70,19 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Orders> orders;
 
+
     // 생성자 @Builder
     @Builder
-    public User(String username,String mobileNumber, String address, UserRole userRole, String email, LocalDateTime created_at, LocalDateTime updated_at) {
+    public User(Long id, String username, String name,String mobileNumber, String address, UserRole userRole, String email, String postcode, String detailAddress) {
+        this.id = id;
         this.userName = username;
+        this.name = name;
         this.mobileNumber = mobileNumber;
         this.address = address;
         this.userRole = userRole;
         this.email = email;
+        this.postcode = postcode;
+        this.detailAddress = detailAddress;
     }
+
 }

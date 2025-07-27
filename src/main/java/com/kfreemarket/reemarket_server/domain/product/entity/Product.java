@@ -8,12 +8,15 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+
 
 @Entity
 @Getter
@@ -27,10 +30,10 @@ public class Product {
     private Long id;
 
     @Column(name = "product_name",nullable = false, unique = true)
-    private String ProductName;
+    private String productName;
 
     @Column(name = "product_price", nullable = false)
-    private Integer ProductPrice;
+    private Integer productPrice;
 
     @Column(nullable = false)
     private Integer stock;
@@ -40,6 +43,10 @@ public class Product {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private Integer salesCount = 0;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ProductImage> productImages;
@@ -57,9 +64,10 @@ public class Product {
     private List<Question> questions;
 
     @Builder
-    public Product( String ProductName, Integer ProductPrice, Integer stock) {
-        this.ProductName = ProductName;
-        this.ProductPrice = ProductPrice;
+    public Product( String productName, Integer productPrice, Integer stock, Integer salesCount) {
+        this.productName = productName;
+        this.productPrice = productPrice;
         this.stock = stock;
+        this.salesCount = (salesCount != null) ? salesCount : 0;
     }
 }
