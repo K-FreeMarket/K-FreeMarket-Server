@@ -80,9 +80,6 @@ spring:
       filter:
         enabled: true
 
-jwt:
-  secretKey: ${JWT_SECRETKEY}
-
 springdoc:
   swagger-ui:
     operations-sorter: alpha(알파멧 오름차순), method(HTTP메소드순)
