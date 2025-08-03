@@ -47,11 +47,15 @@ jobs:
     - name: Run chmod to make gradlew executable
       run: chmod +x ./gradlew
 
+    # (1) 프로그램 태스트만 실행
+    - name: Test 실행(테스트 코드만 실행)
+      run: ./gradlew --info test
+
     # (1) 프로그램 빌드 (Java 빌드) 3) Java 빌드
     - name: Spring Boot Build
       run: |
         export $(cat .env | xargs)
-        ./gradlew clean build -x test
+        ./gradlew clean build --exclude-task test
 
     # (2) Docker 이미지 빌드 1) DockerFile 을 기반으로 Docekr Image 빌드
     - name: docker image build
