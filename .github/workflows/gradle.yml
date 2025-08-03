@@ -28,6 +28,12 @@ jobs:
       with:
         java-version: '21'
         distribution: 'temurin'
+    
+    - name: Create env.properties file for tests
+      run: |
+        mkdir -p src/test/resources/properties
+        echo "jwt.secretKey=${{ secrets.JWT_SECRETKEY }}" > src/test/resources/properties/env.properties
+
 
     # (1) 프로그램 빌드 (Java 빌드) 2) Java 빌드를 위한 ./gradlew 파일 권한 변경
     - name: Run chmod to make gradlew executable
