@@ -13,6 +13,7 @@ jobs:
 
     env:
       JWT_SECRETKEY: ${{ secrets.JWT_SECRETKEY }}
+      DB_URL: ${{ secrets.DB_URL }}
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
@@ -33,6 +34,11 @@ jobs:
       run: |
         mkdir -p src/test/resources/properties
         echo "jwt.secretKey=${{ secrets.JWT_SECRETKEY }}" > src/test/resources/properties/env.properties
+        echo "db.url=${{ secrets.DB_URL }}" >> src/test/resources/properties/env.properties
+        echo "db.user=${{ secrets.DB_USER }}" >> src/test/resources/properties/env.properties
+        echo "db.password=${{ secrets.DB_PASSWORD }}" >> src/test/resources/properties/env.properties
+        echo "naver.client.id=${{ secrets.NAVER_CLIENT_ID }}" >> src/test/resources/properties/env.properties
+        echo "naver.client.secret=${{ secrets.NAVER_CLIENT_SECRET }}" >> src/test/resources/properties/env.properties
 
 
     # (1) 프로그램 빌드 (Java 빌드) 2) Java 빌드를 위한 ./gradlew 파일 권한 변경
