@@ -6,7 +6,7 @@ spring:
     import: optional:classpath:properties/env.properties
 
   datasource:
-    url: ${DB_URL}
+    url: jdbc:mysql://127.0.0.1:3306/test?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
