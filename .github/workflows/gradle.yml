@@ -29,12 +29,25 @@ jobs:
       with:
         java-version: '21'
         distribution: 'temurin'
+
+    # ✅ MySQL 컨테이너 구동 추가 (여기서 DB 포트와 사용자, 패스워드 설정)
+    - name: MySQL 설치 및 실행
+      uses: samin/mysql-action@v1
+      with:
+        host port: 3306
+        container port: 3306
+        mysql version: '8.0'
+        character set server: 'utf8'
+        collation server: 'utf8_general_ci'
+        mysql database: test
+        mysql user: ${{ secrets.DB_USER }}
+        mysql password: ${{ secrets.DB_PASSWORD }}
     
     - name: Create env.properties file for tests
       run: |
         mkdir -p src/test/resources/properties
         echo "jwt.secretKey=${{ secrets.JWT_SECRETKEY }}" > src/test/resources/properties/env.properties
-        echo "db.url=${{ secrets.DB_URL }}" >> src/test/resources/properties/env.properties
+        echo "db.url=jdbc:mysql://localhost:3306/test" >> src/test/resources/properties/env.properties
         echo "db.user=${{ secrets.DB_USER }}" >> src/test/resources/properties/env.properties
         echo "db.password=${{ secrets.DB_PASSWORD }}" >> src/test/resources/properties/env.properties
         echo "naver.client.id=${{ secrets.NAVER_CLIENT_ID }}" >> src/test/resources/properties/env.properties
