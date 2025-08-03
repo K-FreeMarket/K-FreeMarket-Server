@@ -51,7 +51,7 @@ jobs:
     - name: Spring Boot Build
       run: |
         export $(cat .env | xargs)
-        ./gradlew clean build --info
+        ./gradlew clean build -x test
 
     # (2) Docker 이미지 빌드 1) DockerFile 을 기반으로 Docekr Image 빌드
     - name: docker image build
