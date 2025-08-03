@@ -52,6 +52,7 @@ jobs:
         echo "db.password=${{ secrets.DB_PASSWORD }}" >> src/test/resources/properties/env.properties
         echo "naver.client.id=${{ secrets.NAVER_CLIENT_ID }}" >> src/test/resources/properties/env.properties
         echo "naver.client.secret=${{ secrets.NAVER_CLIENT_SECRET }}" >> src/test/resources/properties/env.properties
+        echo "spring.jpa.hibernate.ddl-auto=create" >> src/test/resources/properties/env.properties
 
     - name: Check env.properties
       run: ls -R src/test/resources
