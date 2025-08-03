@@ -42,6 +42,18 @@ jobs:
         mysql database: test
         mysql user: ${{ secrets.DB_USER }}
         mysql password: ${{ secrets.DB_PASSWORD }}
+
+    # Wait MySQL Service
+    - name: Wait for MySQL to be ready
+      run: |
+        for i in {1..30}; do
+          if mysqladmin ping -h "127.0.0.1" -P 3306 -u "${{ secrets.DB_USER }}" -p"${{ secrets.DB_PASSWORD }}" --silent; then
+            echo "MySQL is up!"
+            break
+          fi
+          echo "Waiting for MySQL..."
+          sleep 2
+        done
     
     - name: Create env.properties file for tests
       run: |
@@ -56,6 +68,7 @@ jobs:
 
     - name: Check env.properties
       run: ls -R src/test/resources
+
 
     # (1) 프로그램 빌드 (Java 빌드) 2) Java 빌드를 위한 ./gradlew 파일 권한 변경
     - name: Run chmod to make gradlew executable
