@@ -39,3 +39,4 @@ out/
 ### Test yml ###
 **/src/main/resources/application-test.yml
 **/src/main/resources/properties/env.properties
+**/src/test/resources/properties/env.properties
