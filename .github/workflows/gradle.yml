@@ -11,6 +11,18 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_DATABASE: test
+          MYSQL_USER: ${{ secrets.DB_USER }}
+          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping --silent" --health-interval=10s --health-timeout=5s --health-retries=5
+
     env:
       JWT_SECRETKEY: ${{ secrets.JWT_SECRETKEY }}
       DB_URL: ${{ secrets.DB_URL }}
@@ -29,60 +41,25 @@ jobs:
       with:
         java-version: '21'
         distribution: 'temurin'
-
-    # ✅ MySQL 컨테이너 구동 추가 (여기서 DB 포트와 사용자, 패스워드 설정)
-    - name: MySQL 설치 및 실행
-      uses: samin/mysql-action@v1
-      with:
-        host port: 3306
-        container port: 3306
-        mysql version: '8.0'
-        character set server: 'utf8'
-        collation server: 'utf8_general_ci'
-        mysql database: test
-        mysql user: ${{ secrets.DB_USER }}
-        mysql password: ${{ secrets.DB_PASSWORD }}
-
-    # Wait MySQL Service
-    - name: Wait for MySQL to be ready
-      run: |
-        for i in {1..30}; do
-          if mysqladmin ping -h "127.0.0.1" -P 3306 -u "${{ secrets.DB_USER }}" -p"${{ secrets.DB_PASSWORD }}" --silent; then
-            echo "MySQL is up!"
-            break
-          fi
-          echo "Waiting for MySQL..."
-          sleep 2
-        done
     
     - name: Create env.properties file for tests
       run: |
         mkdir -p src/test/resources/properties
         echo "jwt.secretKey=${{ secrets.JWT_SECRETKEY }}" > src/test/resources/properties/env.properties
-        echo "db.url=jdbc:mysql://localhost:3306/test" >> src/test/resources/properties/env.properties
+        echo "db.url=jdbc:mysql://127.0.0.1:3306/test" >> src/test/resources/properties/env.properties
         echo "db.user=${{ secrets.DB_USER }}" >> src/test/resources/properties/env.properties
         echo "db.password=${{ secrets.DB_PASSWORD }}" >> src/test/resources/properties/env.properties
         echo "naver.client.id=${{ secrets.NAVER_CLIENT_ID }}" >> src/test/resources/properties/env.properties
         echo "naver.client.secret=${{ secrets.NAVER_CLIENT_SECRET }}" >> src/test/resources/properties/env.properties
-        echo "spring.jpa.hibernate.ddl-auto=create" >> src/test/resources/properties/env.properties
-
-    - name: Check env.properties
-      run: ls -R src/test/resources
 
 
     # (1) 프로그램 빌드 (Java 빌드) 2) Java 빌드를 위한 ./gradlew 파일 권한 변경
     - name: Run chmod to make gradlew executable
       run: chmod +x ./gradlew
 
-    # (1) 프로그램 태스트만 실행
-    - name: Test 실행(테스트 코드만 실행)
-      run: ./gradlew --info test
-
     # (1) 프로그램 빌드 (Java 빌드) 3) Java 빌드
     - name: Spring Boot Build
-      run: |
-        export $(cat .env | xargs)
-        ./gradlew clean build --exclude-task test
+      run: ./gradlew clean build --info
 
     # (2) Docker 이미지 빌드 1) DockerFile 을 기반으로 Docekr Image 빌드
     - name: docker image build
