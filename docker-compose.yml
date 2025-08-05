@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: wjd15sheep792/kfreemarket-server:0.0.1
+    image: wjd15sheep792/kfreemarket-server:latest
     container_name: kfreemarket-server
     ports:
       - "8080:8080"
