@@ -2,22 +2,22 @@ version: '3.8'
 
 services:
   app:
-    image: your-dockerhub-id/kfreemarket-server:latest
-    container_name: kfreemarket-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: wjd15sheep792/kfreemarket-server:latest
+    container_name: kfreemarket-server
     ports:
       - "8080:8080"
-    environment:
-      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
-      - DB_URL=${DB_URL}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - JWT_SECRETKEY=${JWT_SECRETKEY}
+    env_file:
+      - .env
     depends_on:
       - db
 
   db:
     image: mysql:8.0
     container_name: kfreemarket-db
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: kfreemarket

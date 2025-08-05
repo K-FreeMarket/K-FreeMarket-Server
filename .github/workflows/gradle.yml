@@ -43,7 +43,7 @@ jobs:
     - name: Create env.properties file for tests
       run: |
         mkdir -p src/test/resources/properties
-        echo "jwt.secretKey=${{ secrets.JWT_SECRETKEY }}" > src/test/resources/properties/env.properties
+        echo "jwt.secretKey=${{ secrets.JWT_SECRETKEY }}" >> src/test/resources/properties/env.properties
         echo "db.url=jdbc:mysql://127.0.0.1:3306/test" >> src/test/resources/properties/env.properties
         echo "db.user=${{ secrets.DB_USER }}" >> src/test/resources/properties/env.properties
         echo "db.password=${{ secrets.DB_PASSWORD }}" >> src/test/resources/properties/env.properties
@@ -59,9 +59,22 @@ jobs:
     - name: Spring Boot Build
       run: ./gradlew clean build --info
 
-    # (2) Docker 이미지 빌드 1) DockerFile 을 기반으로 Docekr Image 빌드
-    - name: docker image build
-      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/k-freemarket-demo .
+
+    - name: Create .env file for Docker Compose
+      run: |
+        echo "SPRING_PROFILES_ACTIVE=dev" >> .env
+        echo "DB_URL=jdbc:mysql://db:3306/kfreemarket?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true" >> .env
+        echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+        echo "JWT_SECRETKEY=${{ secrets.JWT_SECRETKEY }}" >> .env
+        echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+        echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
+        echo "NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}" >> .env
+        echo "NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}" >> .env
+
+    # (2) Docker Compose 빌드 1) DockerCopose 을 기반으로 Docekr Compose 빌드
+    - name: Build Docker Image with Compose
+      run: docker-compose build
 
     # (2) Docker 이미지 빌드 2) Docker Hub 에 Login
     - name: docker login
@@ -70,6 +83,9 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PW }}
 
-    # (2) Docker 이미지 빌드 3) Docker Hub 에 빌드된 이미지 push
+    - name: Tag Docker image
+      run: docker tag wjd15sheep792/kfreemarket-server:latest ${{ secrets.DOCKERHUB_USERNAME }}/k-freemarket-demo
+
+      # (2) Docker 이미지 빌드 3) Docker Hub 에 빌드된 이미지 push
     - name: docker Hub push
       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/k-freemarket-demo
