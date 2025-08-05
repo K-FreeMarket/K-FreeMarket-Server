@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 @SpringBootApplication
 @PropertySources({
-		@PropertySource("classpath:properties/env.properties") // env.properties 파일 소스 등록
+		@PropertySource(value = "classpath:properties/env.properties", ignoreResourceNotFound = true)
 })
 public class ReemarketServerApplication {
 
