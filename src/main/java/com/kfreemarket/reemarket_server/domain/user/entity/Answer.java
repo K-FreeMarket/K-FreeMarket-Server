@@ -23,7 +23,7 @@ public class Answer {
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId  // 핵심! 이걸 통해 question_id를 PK로도 사용
-    @JoinColumn(name = "question_id")
+    @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
     private String content;

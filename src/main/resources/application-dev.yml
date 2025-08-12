@@ -90,5 +90,5 @@ springdoc:
 
 logging:
   level:
-    org.hibernate.engine.jdbc.connections.internal: DEBUG
-    com.zaxxer.hikari: DEBUG
+    org.hibernate.engine.jdbc.connections.internal: WARN
+    com.zaxxer.hikari: WARN
