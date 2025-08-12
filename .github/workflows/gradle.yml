@@ -1,0 +1,97 @@
+name: Java CI with Gradle
+
+# master 브랜치에 push, PR 이벤트 발생시 동작.
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_DATABASE: test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping --silent" --health-interval=10s --health-timeout=5s --health-retries=5
+
+    env:
+      JWT_SECRETKEY: ${{ secrets.JWT_SECRETKEY }}
+      DB_URL: ${{ secrets.DB_URL }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+      NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
+
+    steps:
+    # (1) 프로그램 빌드 (Java 빌드) 1) Java 및 Docekr 빌드를 위한 환경 설정
+    - uses: actions/checkout@v4
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Install Docker Compose v2
+      run: |
+        sudo curl -L "https://github.com/docker/compose/releases/download/v2.27.1/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose
+        sudo chmod +x /usr/local/bin/docker-compose
+        docker-compose version
+    
+    - name: Create env.properties file for tests
+      run: |
+        mkdir -p src/test/resources/properties
+        echo "jwt.secretKey=${{ secrets.JWT_SECRETKEY }}" >> src/test/resources/properties/env.properties
+        echo "db.url=jdbc:mysql://127.0.0.1:3306/test" >> src/test/resources/properties/env.properties
+        echo "db.user=${{ secrets.DB_USER }}" >> src/test/resources/properties/env.properties
+        echo "db.password=${{ secrets.DB_PASSWORD }}" >> src/test/resources/properties/env.properties
+        echo "naver.client.id=${{ secrets.NAVER_CLIENT_ID }}" >> src/test/resources/properties/env.properties
+        echo "naver.client.secret=${{ secrets.NAVER_CLIENT_SECRET }}" >> src/test/resources/properties/env.properties
+
+
+    # (1) 프로그램 빌드 (Java 빌드) 2) Java 빌드를 위한 ./gradlew 파일 권한 변경
+    - name: Run chmod to make gradlew executable
+      run: chmod +x ./gradlew
+
+    # (1) 프로그램 빌드 (Java 빌드) 3) Java 빌드
+    - name: Spring Boot Build
+      run: ./gradlew clean build --info
+
+
+    - name: Create .env file for Docker Compose
+      run: |
+        echo "SPRING_PROFILES_ACTIVE=dev" >> .env
+        echo "DB_URL=jdbc:mysql://db:3306/kfreemarket?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true" >> .env
+        echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+        echo "JWT_SECRETKEY=${{ secrets.JWT_SECRETKEY }}" >> .env
+        echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+        echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
+        echo "NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}" >> .env
+        echo "NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}" >> .env
+
+    # (2) Docker Compose 빌드 1) DockerCopose 을 기반으로 Docekr Compose 빌드
+    - name: Build Docker Image with Compose
+      run: docker-compose build
+
+    # (2) Docker 이미지 빌드 2) Docker Hub 에 Login
+    - name: docker login
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PW }}
+
+    - name: Tag Docker image
+      run: docker tag wjd15sheep792/kfreemarket-server:latest ${{ secrets.DOCKERHUB_USERNAME }}/k-freemarket-demo:0.0.1
+
+      # (2) Docker 이미지 빌드 3) Docker Hub 에 빌드된 이미지 push
+    - name: docker Hub push
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/k-freemarket-demo:0.0.1

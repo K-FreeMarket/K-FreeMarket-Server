@@ -25,7 +25,7 @@ public class CartItem {
     private int quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")  //FK 키 이름
+    @JoinColumn(name = "user_id", nullable = false)  //FK 키 이름
     private User user;
 
     @CreatedDate

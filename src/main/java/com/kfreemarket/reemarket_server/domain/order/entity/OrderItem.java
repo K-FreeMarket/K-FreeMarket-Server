@@ -10,6 +10,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,19 +29,23 @@ public class OrderItem {
     @CreatedDate
     private LocalDateTime createdAt;
 
+    @ElementCollection
+    @CollectionTable(
+            name = "OrderItemOption",
+            joinColumns = @JoinColumn(name = "order_item_id")
+    )
+    @Column(name = "option_value", nullable = false)
+    private List<String> optionLists = new ArrayList<>();
+
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", nullable = false)
     private Orders orders;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
-
     @Builder
-    public OrderItem(Integer quantity, LocalDateTime createdAt, Orders orders, Product product) {
+    public OrderItem(Integer quantity, Orders orders, Product product, List<String> optionLists) {
         this.quantity = quantity;
-        this.createdAt = createdAt;
         this.orders = orders;
-        this.product = product;
+        this.optionLists = optionLists;
     }
 }

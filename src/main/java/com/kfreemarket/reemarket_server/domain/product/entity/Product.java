@@ -33,7 +33,7 @@ public class Product {
     private String productName;
 
     @Column(name = "product_price", nullable = false)
-    private Integer productPrice;
+    private Long productPrice;
 
     @Column(nullable = false)
     private Integer stock;
@@ -46,7 +46,7 @@ public class Product {
 
     @Column(nullable = false)
     @ColumnDefault("0")
-    private Integer salesCount = 0;
+    private Integer salesCount;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ProductImage> productImages;
@@ -55,19 +55,20 @@ public class Product {
     private List<Discount> discounts;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<OrderItem> orderItems;
-
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private List<Review> reviews;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Question> questions;
 
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductOptionCategoryMap> productOptionCategoryMaps;
+
     @Builder
-    public Product( String productName, Integer productPrice, Integer stock, Integer salesCount) {
+    public Product(String productName, Long productPrice, Integer stock, Integer salesCount) {
         this.productName = productName;
         this.productPrice = productPrice;
         this.stock = stock;
-        this.salesCount = (salesCount != null) ? salesCount : 0;
+        this.salesCount = salesCount;
     }
+
 }

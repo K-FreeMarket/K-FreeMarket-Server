@@ -23,10 +23,10 @@ public class ProductImage {
     private Long id;
 
     @Column(name = "image_url", nullable = false, columnDefinition = "TEXT")
-    private String ImageUrl;
+    private String imageUrl;
 
     @Column(name = "is_main", nullable = false)
-    private Boolean IsMain;
+    private Boolean isMain;
 
     @CreatedDate
     private LocalDateTime CreatedAt;
@@ -40,8 +40,8 @@ public class ProductImage {
 
     @Builder
     public ProductImage(String ImageUrl, Boolean IsMain, Product product) {
-        this.ImageUrl = ImageUrl;
-        this.IsMain = IsMain;
+        this.imageUrl = ImageUrl;
+        this.isMain = IsMain;
         this.product = product;
     }
 }

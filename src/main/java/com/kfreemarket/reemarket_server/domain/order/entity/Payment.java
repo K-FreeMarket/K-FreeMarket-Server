@@ -35,7 +35,7 @@ public class Payment {
     private Integer paidPrice;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", nullable = false)
     private Orders orders;
 
     @Builder

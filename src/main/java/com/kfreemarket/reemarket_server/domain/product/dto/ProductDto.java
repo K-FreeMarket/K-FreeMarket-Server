@@ -13,7 +13,7 @@ public class ProductDto {
 
     private String productName;
 
-    private Integer productPrice;
+    private Long productPrice;
 
     private Integer stock;
 

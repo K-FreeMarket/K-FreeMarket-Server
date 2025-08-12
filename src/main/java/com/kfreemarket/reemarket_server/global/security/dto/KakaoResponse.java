@@ -2,6 +2,7 @@ package com.kfreemarket.reemarket_server.global.security.dto;
 
 import java.util.Map;
 
+@SuppressWarnings("unchecked")
 public class KakaoResponse implements OAuth2Response{
 
     private final Map<String, Object> attribute;
