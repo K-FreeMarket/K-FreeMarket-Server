@@ -1,6 +1,5 @@
 package com.kfreemarket.reemarket_server.global.security.service;
 
-import com.kfreemarket.reemarket_server.domain.user.dto.UserDTO;
 import com.kfreemarket.reemarket_server.domain.user.entity.User;
 import com.kfreemarket.reemarket_server.domain.user.repository.UserRepository;
 import com.kfreemarket.reemarket_server.global.enums.UserRole;
@@ -64,12 +63,12 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
 
             userRepository.save(userEntity);
 
-            UserDTO userDTO = new UserDTO();
-            userDTO.setUsername(username);
-            userDTO.setName(oAuth2Response.getName());
-            userDTO.setRole(UserRole.ROLE_USER);
+            SecurityUserDto securityUserDto = new SecurityUserDto();
+            securityUserDto.setUsername(username);
+            securityUserDto.setName(oAuth2Response.getName());
+            securityUserDto.setRole(UserRole.ROLE_USER);
 
-            return new CustomOAuth2User(userDTO);
+            return new CustomOAuth2User(securityUserDto);
 
         }else{
             existData.builder()
@@ -80,12 +79,12 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
 
             userRepository.save(existData);
 
-            UserDTO userDTO = new UserDTO();
-            userDTO.setUsername(existData.getUserName());
-            userDTO.setName(oAuth2Response.getName());
-            userDTO.setRole(existData.getUserRole());
+            SecurityUserDto securityUserDto = new SecurityUserDto();
+            securityUserDto.setUsername(existData.getUserName());
+            securityUserDto.setName(oAuth2Response.getName());
+            securityUserDto.setRole(existData.getUserRole());
 
-            return new CustomOAuth2User(userDTO);
+            return new CustomOAuth2User(securityUserDto);
         }
 
     }

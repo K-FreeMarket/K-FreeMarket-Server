@@ -1,9 +1,9 @@
-package com.kfreemarket.reemarket_server.domain.product.controller;
+package com.kfreemarket.reemarket_server.publicapi.controller;
 
-import com.kfreemarket.reemarket_server.domain.product.dto.BannerDto;
-import com.kfreemarket.reemarket_server.domain.product.dto.ProductDto;
-import com.kfreemarket.reemarket_server.domain.product.service.BannerService;
-import com.kfreemarket.reemarket_server.domain.product.service.ProductService;
+import com.kfreemarket.reemarket_server.publicapi.dto.BannerDto;
+import com.kfreemarket.reemarket_server.publicapi.dto.ProductDto;
+import com.kfreemarket.reemarket_server.publicapi.service.BannerService;
+import com.kfreemarket.reemarket_server.publicapi.service.ProductService;
 import com.kfreemarket.reemarket_server.global.api.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

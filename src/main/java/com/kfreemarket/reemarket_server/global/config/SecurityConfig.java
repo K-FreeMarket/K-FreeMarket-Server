@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -46,8 +47,41 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    /* 1) Admin(Thymeleaf) 체인: 세션/폼로그인/CSRF ON */
+    @Bean @Order(1)
+    public SecurityFilterChain adminChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/", "/login", "/logout", "/css/**", "/js/**", "/images/**", "/icons/**", "/admin/**")
+                .cors(cors -> cors.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/", "/login", "/css/**", "/js/**", "/images/**", "/icons/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
+                );
+        http
+                .formLogin(form -> form
+                        .loginPage("/")                 // 로그인 페이지를 루트("/")로
+                        .loginProcessingUrl("/login")   // POST 처리 경로
+                        .usernameParameter("username")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/dashboard", true) // 로그인 성공 시 대시보드로 이동
+                        .permitAll()
+                );
+        http
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/") // 로그아웃 후 로그인 페이지로
+                        .permitAll()
+                )
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .httpBasic(AbstractHttpConfigurer::disable);
+
+        return http.build();
+    }
+
+
+    @Bean  @Order(2)
+    public SecurityFilterChain apiChain(HttpSecurity http) throws Exception {
 
         http
                 .cors((cors -> cors.configurationSource(new CorsConfigurationSource() {
@@ -57,32 +91,32 @@ public class SecurityConfig {
                         CorsConfiguration configuration = new CorsConfiguration();
 
                         configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-                        configuration.setAllowedMethods(Collections.singletonList("*"));
-                        configuration.setAllowCredentials(true);
+                        configuration.setAllowedMethods(java.util.List.of("GET","POST","PUT","DELETE","PATCH","OPTIONS"));
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
+                        configuration.setAllowCredentials(true);
                         configuration.setMaxAge(3600L);
 
                         // 헤더 cors에 허용
-                        configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
-                        configuration.setExposedHeaders(Collections.singletonList("refresh"));
-                        configuration.setExposedHeaders(Collections.singletonList("access"));
-
+                        configuration.setExposedHeaders(java.util.Arrays.asList("Set-Cookie", "refresh", "access"));
                         return configuration;
                     }
                 })));
 
-        // csrf disable
-        http
-                .csrf((auth) -> auth.disable());
 
         http
+                .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable);
 
-        // JWTFilter 추가
+        // 경로별 인가
         http
-                .addFilterAfter(new JWTFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
+                .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers( "/reissue/**", "/auth/token", "/logout").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**").permitAll()
+                        .requestMatchers( "/api/products/**").permitAll()
+                        .requestMatchers("/oauth2/authorization/**", "/login/oauth2/code/**").permitAll() // ← 권장
+                        .anyRequest().authenticated());
 
         // Oauth 코드
         http
@@ -91,14 +125,9 @@ public class SecurityConfig {
                         .successHandler(customSuccessHandler)
                 );
 
-        // 경로별 인가
+        // JWTFilter 추가
         http
-                .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers( "/reissue/**", "/auth/token", "/logout").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**").permitAll()
-                        .requestMatchers( "/api/products/**").permitAll()
-                        .requestMatchers( "/", "/images/**", "/icons/**").permitAll()
-                        .anyRequest().authenticated());
+                .addFilterAfter(new JWTFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
 
         http
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshTokenRepository), LogoutFilter.class);
@@ -110,6 +139,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-
 }

@@ -1,4 +1,4 @@
-package com.kfreemarket.reemarket_server.domain.product.controller;
+package com.kfreemarket.reemarket_server.admin.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/admin/products")
-public class ProductViewController {
+public class AdminProductController {
 
     @GetMapping
     public String productView(Model model) {
@@ -19,5 +19,4 @@ public class ProductViewController {
     public String eventView(Model model) {
         return "events";
     }
-
 }

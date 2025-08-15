@@ -1,6 +1,6 @@
 package com.kfreemarket.reemarket_server.global.security.dto;
 
-import com.kfreemarket.reemarket_server.domain.user.dto.UserDTO;
+import com.kfreemarket.reemarket_server.global.security.dto.SecurityUserDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -11,10 +11,10 @@ import java.util.Map;
 
 public class CustomOAuth2User implements OAuth2User {
 
-    private final UserDTO userDTO;
+    private final SecurityUserDto securityUserDto;
 
-    public CustomOAuth2User(UserDTO userDTO){
-        this.userDTO = userDTO;
+    public CustomOAuth2User(SecurityUserDto securityUserDto){
+        this.securityUserDto = securityUserDto;
     }
 
 
@@ -32,7 +32,7 @@ public class CustomOAuth2User implements OAuth2User {
             @Override
             public String getAuthority() {
 
-                return userDTO.getRole().name();
+                return securityUserDto.getRole().name();
             }
         });
 
@@ -42,10 +42,10 @@ public class CustomOAuth2User implements OAuth2User {
 
     @Override
     public String getName() {
-        return userDTO.getName();
+        return securityUserDto.getName();
     }
 
     public String getUsername() {
-        return userDTO.getUsername();
+        return securityUserDto.getUsername();
     }
 }

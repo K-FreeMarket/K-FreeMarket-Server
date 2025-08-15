@@ -1,4 +1,4 @@
-package com.kfreemarket.reemarket_server.domain.product.dto;
+package com.kfreemarket.reemarket_server.publicapi.dto;
 
 import com.kfreemarket.reemarket_server.domain.product.entity.Banner;
 import lombok.AccessLevel;
