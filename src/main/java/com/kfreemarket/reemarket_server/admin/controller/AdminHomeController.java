@@ -16,7 +16,7 @@ public class AdminHomeController {
 
     @GetMapping("/admin")
     public String Admin(Model model) {
-        return "admin";
+        return "dashboard";
     }
 
 

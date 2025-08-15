@@ -1,6 +1,7 @@
 package com.kfreemarket.reemarket_server.admin.service;
 
 import com.kfreemarket.reemarket_server.admin.dto.AdminUserPageDto;
+import com.kfreemarket.reemarket_server.admin.repository.AdminUserRepository;
 import com.kfreemarket.reemarket_server.domain.user.entity.User;
 import com.kfreemarket.reemarket_server.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

@@ -5,6 +5,7 @@ import com.kfreemarket.reemarket_server.global.security.jwt.JWTFilter;
 import com.kfreemarket.reemarket_server.global.security.jwt.JWTUtil;
 import com.kfreemarket.reemarket_server.global.security.oauth2.CustomLogoutFilter;
 import com.kfreemarket.reemarket_server.global.security.oauth2.CustomSuccessHandler;
+import com.kfreemarket.reemarket_server.global.security.service.AdminUserDetailsService;
 import com.kfreemarket.reemarket_server.global.security.service.CustomOAuthUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -43,13 +45,24 @@ public class SecurityConfig {
     }
 
     @Bean
+    public DaoAuthenticationProvider adminAuthProvider(AdminUserDetailsService uds,
+                                                       BCryptPasswordEncoder encoder) {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(uds);
+        provider.setPasswordEncoder(encoder);
+        return provider;
+    }
+
+    @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+
+
     /* 1) Admin(Thymeleaf) 체인: 세션/폼로그인/CSRF ON */
     @Bean @Order(1)
-    public SecurityFilterChain adminChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain adminChain(HttpSecurity http, DaoAuthenticationProvider adminAuthProvider) throws Exception {
         http
                 .securityMatcher("/", "/login", "/logout", "/css/**", "/js/**", "/images/**", "/icons/**", "/admin/**")
                 .cors(cors -> cors.disable())
@@ -64,7 +77,7 @@ public class SecurityConfig {
                         .loginProcessingUrl("/login")   // POST 처리 경로
                         .usernameParameter("username")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/dashboard", true) // 로그인 성공 시 대시보드로 이동
+                        .defaultSuccessUrl("/admin", true) // 로그인 성공 시 대시보드로 이동
                         .permitAll()
                 );
         http
@@ -75,6 +88,9 @@ public class SecurityConfig {
                 )
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .httpBasic(AbstractHttpConfigurer::disable);
+
+        // ★ 인증 제공자 연결
+        http.authenticationProvider(adminAuthProvider);
 
         return http.build();
     }
