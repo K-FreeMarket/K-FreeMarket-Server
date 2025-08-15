@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/")
 @RequiredArgsConstructor
 public class UserViewController {
 

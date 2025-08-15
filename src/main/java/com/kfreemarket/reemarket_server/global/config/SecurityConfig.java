@@ -96,7 +96,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers( "/reissue/**", "/auth/token", "/logout").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**").permitAll()
-                        .requestMatchers("/admin/**", "/api/products/**").permitAll()
+                        .requestMatchers( "/api/products/**").permitAll()
+                        .requestMatchers( "/", "/images/**", "/icons/**").permitAll()
                         .anyRequest().authenticated());
 
         http
