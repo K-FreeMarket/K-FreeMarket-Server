@@ -58,23 +58,21 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
-
     /* 1) Admin(Thymeleaf) 체인: 세션/폼로그인/CSRF ON */
     @Bean @Order(1)
     public SecurityFilterChain adminChain(HttpSecurity http, DaoAuthenticationProvider adminAuthProvider) throws Exception {
         http
-                .securityMatcher("/", "/login", "/logout", "/css/**", "/js/**", "/images/**", "/icons/**", "/admin/**")
+                .securityMatcher("/","/admin/**", "/admin/login", "/logout", "/css/**", "/js/**", "/images/**", "/icons/**")
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/css/**", "/js/**", "/images/**", "/icons/**").permitAll()
+                        .requestMatchers("/", "/admin/login", "/css/**", "/js/**", "/images/**", "/icons/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
         http
                 .formLogin(form -> form
                         .loginPage("/")                 // 로그인 페이지를 루트("/")로
-                        .loginProcessingUrl("/login")   // POST 처리 경로
+                        .loginProcessingUrl("/admin/login")   // POST 처리 경로
                         .usernameParameter("username")
                         .passwordParameter("password")
                         .defaultSuccessUrl("/admin", true) // 로그인 성공 시 대시보드로 이동

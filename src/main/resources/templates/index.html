@@ -10,7 +10,7 @@
       integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
       crossorigin="anonymous"
     />
-    <link href="globals.css" rel="stylesheet" />
+    <link href="globals.css" type="text/css" th:href="@{/css/globals.css}" rel="stylesheet" />
   </head>
   <body class="min-vh-100">
     <div class="min-vh-100">
@@ -28,7 +28,7 @@
         >
           <div class="w-75" style="max-width: 420px">
             <h2 class="mb-4 text-center">로그인</h2>
-            <form th:action="@{/login}" method="post" class="mt-4">
+            <form th:action="@{/admin/login}" method="post" class="mt-4">
               <input
                 type="hidden"
                 th:name="${_csrf.parameterName}"
