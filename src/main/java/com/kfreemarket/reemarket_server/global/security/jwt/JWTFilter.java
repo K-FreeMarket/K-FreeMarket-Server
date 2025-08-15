@@ -1,8 +1,8 @@
 package com.kfreemarket.reemarket_server.global.security.jwt;
 
-import com.kfreemarket.reemarket_server.domain.user.dto.UserDTO;
 import com.kfreemarket.reemarket_server.global.enums.UserRole;
 import com.kfreemarket.reemarket_server.global.security.dto.CustomOAuth2User;
+import com.kfreemarket.reemarket_server.global.security.dto.SecurityUserDto;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -67,12 +67,12 @@ public class JWTFilter extends OncePerRequestFilter {
         String role = jwtUtil.getRole(token);
 
         //userDTO를 생성하여 값 set
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUsername(username);
-        userDTO.setRole(UserRole.valueOf(role));
+        SecurityUserDto securityUserDto = new SecurityUserDto();
+        securityUserDto.setUsername(username);
+        securityUserDto.setRole(UserRole.valueOf(role));
 
         //UserDetails에 회원 정보 객체 담기
-        CustomOAuth2User customOAuth2User = new CustomOAuth2User(userDTO);
+        CustomOAuth2User customOAuth2User = new CustomOAuth2User(securityUserDto);
 
         //스프링 시큐리티 인증 토큰 생성
         Authentication authToken = new UsernamePasswordAuthenticationToken(customOAuth2User, null, customOAuth2User.getAuthorities());

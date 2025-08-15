@@ -1,7 +1,7 @@
-package com.kfreemarket.reemarket_server.domain.product.service;
+package com.kfreemarket.reemarket_server.publicapi.service;
 
 
-import com.kfreemarket.reemarket_server.domain.product.dto.ProductDto;
+import com.kfreemarket.reemarket_server.publicapi.dto.ProductDto;
 import com.kfreemarket.reemarket_server.domain.product.entity.Product;
 import com.kfreemarket.reemarket_server.domain.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;

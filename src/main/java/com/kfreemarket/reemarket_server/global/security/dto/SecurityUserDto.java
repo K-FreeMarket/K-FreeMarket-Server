@@ -1,4 +1,4 @@
-package com.kfreemarket.reemarket_server.domain.user.dto;
+package com.kfreemarket.reemarket_server.global.security.dto;
 
 import com.kfreemarket.reemarket_server.global.enums.UserRole;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserDTO {
+public class SecurityUserDto {
 
     private UserRole role;
 

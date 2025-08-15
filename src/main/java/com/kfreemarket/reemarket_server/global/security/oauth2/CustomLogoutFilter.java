@@ -1,7 +1,5 @@
 package com.kfreemarket.reemarket_server.global.security.oauth2;
 
-
-
 import com.kfreemarket.reemarket_server.domain.system.repository.RefreshTokenRepository;
 import com.kfreemarket.reemarket_server.global.security.jwt.JWTUtil;
 import io.jsonwebtoken.ExpiredJwtException;

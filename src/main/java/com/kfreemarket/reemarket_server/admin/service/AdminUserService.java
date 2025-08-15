@@ -1,6 +1,7 @@
-package com.kfreemarket.reemarket_server.domain.user.service;
+package com.kfreemarket.reemarket_server.admin.service;
 
-import com.kfreemarket.reemarket_server.domain.user.dto.UserPageDto;
+import com.kfreemarket.reemarket_server.admin.dto.AdminUserPageDto;
+import com.kfreemarket.reemarket_server.admin.repository.AdminUserRepository;
 import com.kfreemarket.reemarket_server.domain.user.entity.User;
 import com.kfreemarket.reemarket_server.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +18,11 @@ import java.util.Map;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserService {
+public class AdminUserService {
 
     private final UserRepository userRepository;
 
-    public UserPageDto getAllUsers(Pageable pageable, String searchText, String sort) {
+    public AdminUserPageDto getAllUsers(Pageable pageable, String searchText, String sort) {
         Pageable sortedPageable = PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
@@ -32,7 +33,7 @@ public class UserService {
                 searchText, searchText, searchText, searchText, sortedPageable
         );
 
-        return UserPageDto.of(users);
+        return AdminUserPageDto.of(users);
     }
 
     private Sort getSortOption(String sort) {
